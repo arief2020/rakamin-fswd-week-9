@@ -21,7 +21,7 @@ Returns all movies in the system.
   None
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -45,7 +45,7 @@ Returns the specific category.
   None
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:** 
@@ -76,7 +76,7 @@ Returns all movies in the system.
 
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -106,7 +106,7 @@ Update movies by id.
 
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -126,7 +126,7 @@ delete movies by id.
   None
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:** 
@@ -162,7 +162,7 @@ Returns all users in the system.
   None
 - **Headers**  
   - Content-Type: application/json
-  - Authorization: Bearer <JWT Token>
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -185,8 +185,8 @@ Returns the specific category.
 - **Data Params**  
   None
 - **Headers**  
-  Content-Type: application/json
-  Authorization: Bearer <JWT Token>
+  - Content-Type: application/json
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:** 
@@ -217,8 +217,8 @@ Returns all movies in the system.
 ```
 
 - **Headers**  
-  Content-Type: application/json
-  Authorization: Bearer <JWT Token>
+  - Content-Type: application/json
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -245,8 +245,8 @@ Update movies by id.
 ```
 
 - **Headers**  
-  Content-Type: application/json
-  Authorization: Bearer <JWT Token>
+  - Content-Type: application/json
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:**
@@ -265,8 +265,8 @@ delete users by id.
 - **Data Params**  
   None
 - **Headers**  
-  Content-Type: application/json
-  Authorization: Bearer <JWT Token>
+  - Content-Type: application/json
+  - Authorization: Bearer JWT Token
 - **Success Response:**
 - **Code:** 200  
   **Content:** 
@@ -294,7 +294,7 @@ API for login users.
 ```
 
 - **Headers**  
-  Content-Type: application/json
+  - Content-Type: application/json
 - **Success Response:**
 - **Code:** 200  
   **Content:**
