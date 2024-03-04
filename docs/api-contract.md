@@ -17,6 +17,9 @@ Returns all movies in the system.
 
 - **URL Params**  
   None
+- **Query Params**  
+  - page (optional): Desired page number (default: 1).
+  - limit (optional): The maximum number of movies to display per page (default: 10).
 - **Data Params**  
   None
 - **Headers**  
@@ -140,7 +143,6 @@ message: "Success Delete Movies",
 
 
 # Users
-
 - Users object
 
 ```
@@ -158,6 +160,9 @@ Returns all users in the system.
 
 - **URL Params**  
   None
+- **Query Params**  
+  - page (optional): Desired page number (default: 1).
+  - limit (optional): The maximum number of users to display per page (default: 10).
 - **Data Params**  
   None
 - **Headers**  
