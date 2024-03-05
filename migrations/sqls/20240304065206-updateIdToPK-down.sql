@@ -1,0 +1,12 @@
+/* Replace with your SQL commands */
+ALTER TABLE movies 
+DROP CONSTRAINT movies_pkey;
+
+ALTER TABLE movies
+ALTER COLUMN id DROP IDENTITY;
+
+ALTER TABLE users 
+DROP CONSTRAINT users_pkey;
+
+ALTER TABLE users
+ALTER COLUMN id DROP IDENTITY;
