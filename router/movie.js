@@ -75,7 +75,7 @@ const router = express.Router();
  *                   description: Error message
  */
 
-router.get("/", verifyToken, Movie.getAll);
+router.get("/",  Movie.getAll);
 /**
  * @swagger
  * /api/movies/{id}:
@@ -128,7 +128,7 @@ router.get("/", verifyToken, Movie.getAll);
  *                   description: Internal Server Error
  */
 
-router.get("/:id", verifyToken, Movie.getMoviesById);
+router.get("/:id",  Movie.getMoviesById);
 
 /**
  * @swagger
@@ -191,7 +191,7 @@ router.get("/:id", verifyToken, Movie.getMoviesById);
  *                   description: Internal Server Error
  */
 
-router.post("/", verifyToken, Movie.store);
+router.post("/",  Movie.store);
 
 /**
  * @swagger
@@ -271,7 +271,7 @@ router.post("/", verifyToken, Movie.store);
  *                   description: Internal Server Error
  */
 
-router.put("/:id", verifyToken, Movie.update);
+router.put("/:id",  Movie.update);
 
 /**
  * @swagger
@@ -321,6 +321,6 @@ router.put("/:id", verifyToken, Movie.update);
  *                   description: Internal Server Error
  */
 
-router.delete("/:id", verifyToken, Movie.delete);
+router.delete("/:id",  Movie.delete);
 
 module.exports = router;

@@ -2,31 +2,66 @@ const pool = require("../config/query");
 const { successResponse, basicResponse } = require("../services/response");
 
 class Movie {
-  static async getAll(req, res) {
+  static async getAll(req, res, next) {
     try {
-      let page = parseInt(req.query.page) || 1;
+      let page = req.query.page || 1;
       let limit = parseInt(req.query.limit) || 10;
-      let offset = (page - 1) * limit;
-
-      const queries = `SELECT * FROM movies ORDER BY id ASC LIMIT ${limit} OFFSET ${offset};`;
+      let offset = (parseInt(req.query.page) - 1) * limit;
+      
+      let queries = `
+      SELECT 
+        * 
+      FROM 
+        movies 
+      ORDER BY id ASC`;
+      if (page.toLowerCase() != "all") {
+         queries += ` LIMIT ${limit} OFFSET ${offset};`;
+      }
 
       const result = await pool.query(queries);
+      
+      let countQueries = `
+      SELECT 
+        COUNT(DISTINCT movies.*)
+      FROM movies
+      `
 
+      
+      const countData = await pool.query(countQueries)
+      let dataSize = countData.rows[0].count
+
+      let totalPages = Math.ceil(dataSize / limit)
+      const nextPage = (parseInt(page) + 1) <= totalPages ? parseInt(page) + 1 : null
+      const prevPage = (parseInt(page) - 1) > 0  ? parseInt(page) - 1 : null
+      
       return res
         .status(200)
-        .json(successResponse(result.rows, "Success Get All Movie"));
+        .json({
+          data: result.rows, 
+          totalData: dataSize,
+          currentPage: page,
+          nextPage,
+          prevPage,
+          message: "Success Get Movie",
+
+        })
     } catch (error) {
-      console.log(error);
-      res.status(500).json(basicResponse("Internal Server Error"));
+      next(error)
     }
   }
 
   static async getMoviesById(req, res) {
     try {
       const id = req.params.id;
-      const queries = `SELECT * FROM movies where id = ${id}`;
+      const queries = `
+      SELECT 
+        * 
+      FROM 
+        movies 
+      WHERE id = $1
+      `;
 
-      const result = await pool.query(queries);
+      const result = await pool.query(queries, [id]);
       if (result.rows.length === 0) {
         return res.status(404).json(basicResponse("Movie not found"));
       }
@@ -34,24 +69,20 @@ class Movie {
         .status(200)
         .json(successResponse(result.rows, "Success Get Movie By Id"));
     } catch (error) {
-      console.log(error);
-      res.status(500).json(basicResponse("Internal Server Error"));
+      next(error)
     }
   }
 
   static async store(req, res) {
     try {
       let { title, genres, year } = req.body;
-      const queries = `INSERT INTO movies (title, genres, year) VALUES ('${title}', '${genres}', '${year}')`;
-      if (!title || !year || !genres) {
-        return res.status(400).json(basicResponse("bad request"));
-      }
-      await pool.query(queries);
+      const queries = `INSERT INTO movies (title, genres, year) VALUES ($1, $2, $3)`;
+  
+      await pool.query(queries, [title, genres, year]);
 
       return res.status(201).json(basicResponse("Success Create Movies"));
     } catch (error) {
-      console.log(error);
-      res.status(500).json(basicResponse("Internal Server Error"));
+      next(error)
     }
   }
 
