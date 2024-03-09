@@ -1,6 +1,6 @@
 const express = require("express");
 const Movie = require("../controller/movieController");
-const verifyToken = require("../middleware/verifyToken");
+const { authorization } = require("../middleware/verifyToken");
 
 const router = express.Router();
 /**
@@ -75,7 +75,7 @@ const router = express.Router();
  *                   description: Error message
  */
 
-router.get("/",  Movie.getAll);
+router.get("/", Movie.getAll);
 /**
  * @swagger
  * /api/movies/{id}:
@@ -190,7 +190,7 @@ router.get("/:id",  Movie.getMoviesById);
  *                   type: string
  *                   description: Internal Server Error
  */
-
+router.use(authorization)
 router.post("/",  Movie.store);
 
 /**

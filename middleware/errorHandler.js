@@ -13,3 +13,5 @@ const errorHandler = (err, req, res, next) => {
         res.status(500).json({message: "Internet Server Error"})
     }
 }
+
+module.exports = errorHandler

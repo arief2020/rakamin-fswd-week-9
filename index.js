@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const pool = require('./config/query')
 const router = require('./router/route')
 const morgan = require('morgan')
+const errorHandler = require('./middleware/errorHandler')
 
 dotenv.config()
 

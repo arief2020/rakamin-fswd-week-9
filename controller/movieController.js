@@ -4,20 +4,18 @@ const { successResponse, basicResponse } = require("../services/response");
 class Movie {
   static async getAll(req, res, next) {
     try {
-      let page = req.query.page || 1;
+      let page = parseInt(req.query.page) || 1;
       let limit = parseInt(req.query.limit) || 10;
       let offset = (parseInt(req.query.page) - 1) * limit;
-      
       let queries = `
       SELECT 
         * 
       FROM 
         movies 
-      ORDER BY id ASC`;
-      if (page.toLowerCase() != "all") {
-         queries += ` LIMIT ${limit} OFFSET ${offset};`;
-      }
-
+      ORDER BY id ASC 
+      LIMIT ${limit} 
+      OFFSET ${offset};`;
+      
       const result = await pool.query(queries);
       
       let countQueries = `
@@ -31,8 +29,8 @@ class Movie {
       let dataSize = countData.rows[0].count
 
       let totalPages = Math.ceil(dataSize / limit)
-      const nextPage = (parseInt(page) + 1) <= totalPages ? parseInt(page) + 1 : null
-      const prevPage = (parseInt(page) - 1) > 0  ? parseInt(page) - 1 : null
+      const nextPage = (page + 1) <= totalPages ? parseInt(page) + 1 : null
+      const prevPage = (page) - 1 > 0  ? parseInt(page) - 1 : null
       
       return res
         .status(200)
