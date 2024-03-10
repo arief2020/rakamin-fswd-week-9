@@ -3,12 +3,10 @@ const errorHandler = (err, req, res, next) => {
 
     if (err.name === "ErrorNotFound") {
         res.status(404).json({name: err.name, message: err.message})
-    }else if(err.code === "23505"){
-        res.status(400).json({message: err.detail})
-    }else if(err.name == "InvalidCredentials"){
-        res.status(400).json({message: "Wrong email or password"})
-    }else if(err.name === "Unauthenticate"){
-        res.status(403).json({message: "Unauthorized"})
+    }else if(err.name === "BadRequest") {
+        return res.status(400).json({message: err.message})
+    }else if (err.name === "InvalidCredentials") {
+        return res.status(400).json({message: "Wrong email or password"})
     } else{
         res.status(500).json({message: "Internet Server Error"})
     }

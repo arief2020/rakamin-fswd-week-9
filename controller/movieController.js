@@ -1,119 +1,136 @@
 const pool = require("../config/query");
-const { successResponse, basicResponse } = require("../services/response");
 
 class Movie {
   static async getAll(req, res, next) {
     try {
-      let page = parseInt(req.query.page) || 1;
-      let limit = parseInt(req.query.limit) || 10;
-      let offset = (parseInt(req.query.page) - 1) * limit;
-      let queries = `
-      SELECT 
-        * 
-      FROM 
-        movies 
-      ORDER BY id ASC 
-      LIMIT ${limit} 
-      OFFSET ${offset};`;
-      
-      const result = await pool.query(queries);
-      
-      let countQueries = `
-      SELECT 
+      const countSQL = `
+      SELECT
         COUNT(DISTINCT movies.*)
-      FROM movies
-      `
-
+      FROM
+        movies
       
-      const countData = await pool.query(countQueries)
-      let dataSize = countData.rows[0].count
+      `;
+      const queryCount = await pool.query(countSQL);
+      const count = queryCount.rows[0];
 
-      let totalPages = Math.ceil(dataSize / limit)
-      const nextPage = (page + 1) <= totalPages ? parseInt(page) + 1 : null
-      const prevPage = (page) - 1 > 0  ? parseInt(page) - 1 : null
-      
-      return res
-        .status(200)
-        .json({
-          data: result.rows, 
-          totalData: dataSize,
-          currentPage: page,
-          nextPage,
-          prevPage,
-          message: "Success Get Movie",
+      const dataSQL = `
+      SELECT 
+        *
+      FROM
+        movies
+      ORDER BY id ASC
+      `;
+      const queryData = await pool.query(dataSQL);
+      const data = queryData.rows;
 
-        })
+      res.status(200).json({
+        count,
+        data: data,
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
-  static async getMoviesById(req, res) {
+  static async getMoviesById(req, res, next) {
     try {
-      const id = req.params.id;
-      const queries = `
-      SELECT 
-        * 
-      FROM 
-        movies 
+      const { id } = req.params;
+      const sqlGetDataById = `
+      SELECT
+        *
+      FROM
+        movies
       WHERE id = $1
       `;
 
-      const result = await pool.query(queries, [id]);
-      if (result.rows.length === 0) {
-        return res.status(404).json(basicResponse("Movie not found"));
+      const queryDataById = await pool.query(sqlGetDataById, [id]);
+      if (queryDataById.rowCount === 0) {
+        throw { name: "ErrorNotFound", message: "Movies Not Found" };
       }
-      return res
-        .status(200)
-        .json(successResponse(result.rows, "Success Get Movie By Id"));
+      const data = queryDataById.rows[0];
+      return res.status(200).json({ data });
     } catch (error) {
       next(error)
     }
   }
 
-  static async store(req, res) {
+  static async store(req, res, next) {
     try {
       let { title, genres, year } = req.body;
-      const queries = `INSERT INTO movies (title, genres, year) VALUES ($1, $2, $3)`;
+
+      if (!title || !genres || !year) {
+        throw {name: "BadRequest", message: "field must be required by title, genres, and year"}
+      }
+
+      const queries = `
+      INSERT INTO movies (title, genres, year) 
+      VALUES ($1, $2, $3) 
+      RETURNING *
+      `;
   
-      await pool.query(queries, [title, genres, year]);
+      const queryInsert = await pool.query(queries, [title, genres, year]);
 
-      return res.status(201).json(basicResponse("Success Create Movies"));
+      return res.status(201).json({message: "Success Create Movies", data: queryInsert.rows[0]});
     } catch (error) {
       next(error)
     }
   }
 
-  static async update(req, res) {
+  static async update(req, res, next) {
     try {
       let { title, genres, year } = req.body;
-      let { id } = req.params;
-      const queries = `UPDATE movies SET title = '${title}', genres = '${genres}', year = '${year}'  WHERE id = ${id};`;
-      if (!title || !year || !genres) {
-        return res.status(400).json(basicResponse("bad request"));
-      }
-      const result = await pool.query(queries);
+      const { id } = req.params;
 
-      if (result.rowCount === 0) {
-        return res.status(404).json(basicResponse("Movie not found"));
+      const searchSQL = `
+      SELECT 
+        *
+      FROM
+        movies
+      WHERE id = $1
+      `
+      const searchQuery = await pool.query(searchSQL, [id])
+
+      if (searchQuery.rowCount === 0) {
+        throw { name: "ErrorNotFound", message: "Movies Not Found" }; 
       }
-      return res.status(200).json(basicResponse("Success Update Movies"));
+
+      const searchResult = searchQuery.rows[0]
+
+      const updateSQL = `
+      UPDATE 
+        movies 
+      SET 
+        title = $1, 
+        genres = $2, 
+        year = $3 
+      WHERE id = $4
+      `
+      title = title || searchResult.title
+      genres = genres || searchResult.genres
+      year = year || searchResult.year
+
+      await pool.query(updateSQL,[title, genres, year, id])
+      return res.status(200).json({message: "Success update movies"})
     } catch (error) {
-      res.status(500).json(basicResponse("Internal Server Error"));
+      next(error)
     }
   }
 
-  static async delete(req, res) {
+  static async delete(req, res, next) {
     try {
-      let { id } = req.params;
-      const queries = `DELETE FROM movies WHERE id = '${id}';`;
-      const result = await pool.query(queries);
-      if (result.rowCount === 0) {
-        return res.status(404).json(basicResponse("Movie not found"));
+      const { id } = req.params;
+      const sqlDeleteDataById = `
+      DELETE FROM movies
+      WHERE id = $1
+      `;
+
+      const queryDeleteById = await pool.query(sqlDeleteDataById, [id]);
+      if (queryDeleteById.rowCount === 0) {
+        throw { name: "ErrorNotFound", message: "Movies Not Found" };
       }
-      return res.status(200).json(basicResponse("Success Delete Movie"));
+      return res.status(200).json({message: "Success Delete Data By ID"});
     } catch (error) {
-      res.status(500).json(basicResponse("Internal Server Error"));
+      next(error)
     }
   }
 }

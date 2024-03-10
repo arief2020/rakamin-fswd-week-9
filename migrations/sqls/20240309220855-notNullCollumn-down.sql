@@ -1,0 +1,9 @@
+/* Replace with your SQL commands */
+ALTER TABLE movies
+ALTER COLUMN title DROP NOT NULL;
+
+ALTER TABLE movies
+ALTER COLUMN genres DROP NOT NULL;
+
+ALTER TABLE movies
+ALTER COLUMN year DROP NOT NULL;
