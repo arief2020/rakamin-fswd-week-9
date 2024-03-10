@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyToken = require("../middleware/verifyToken");
+const verifyToken = require("../middleware/authMiddleware");
 const Auth = require("../controller/authController");
 
 const router = express.Router();
@@ -83,8 +83,7 @@ const router = express.Router();
  *                   description: Internal Server Error
  */
 
-
-router.post("/register",  Auth.register);
+router.post("/register", Auth.register);
 /**
  * @swagger
  * /api/auth/login:
@@ -142,7 +141,6 @@ router.post("/register",  Auth.register);
  *                   type: string
  *                   description: Users with this email not found
  */
-router.post('/login', Auth.login)
-
+router.post("/login", Auth.login);
 
 module.exports = router;

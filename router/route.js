@@ -1,21 +1,18 @@
-const express = require('express')
+const express = require("express");
 
-const router = express.Router()
+const router = express.Router();
 
 // const swaggerRouter = require('../swagger')
-const movieRouter = require('./movie')
-const userRouter = require('./user')
-const authRouter = require('./auth')
-// const { verifyToken } = require('../middleware/verifyToken')
+const movieRouter = require("./movie");
+const userRouter = require("./user");
+const authRouter = require("./auth");
+const { verifyToken } = require("../middleware/authMiddleware");
 
-router.use('/api/auth', authRouter)
+router.use("/api/auth", authRouter);
 // router.use('/api-docs', swaggerRouter)
 
-// router.use(verifyToken)
-router.use('/api/movies', movieRouter)
-router.use('/api/users', userRouter)
+router.use(verifyToken);
+router.use("/api/movies", movieRouter);
+router.use("/api/users", userRouter);
 
-
-
-
-module.exports = router
+module.exports = router;

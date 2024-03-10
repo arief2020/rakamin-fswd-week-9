@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../controller/userController");
-const verifyToken = require("../middleware/verifyToken");
+const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const router = express.Router();
  *   schemas:
  *     Users:
  *       type: object
- *       properties: 
+ *       properties:
  *         id:
  *           type: integer
  *         email:
@@ -50,7 +50,7 @@ const router = express.Router();
  *           type: integer
  *     security:
  *       - bearerAuth: []
- * 
+ *
  *     responses:
  *       '200':
  *         description: A paginated list of users
@@ -86,7 +86,7 @@ const router = express.Router();
  *                   type: string
  *                   description: Error message
  */
-router.get("/",  User.getAll);
+router.get("/", User.getAll);
 /**
  * @swagger
  * /api/users/{id}:
@@ -225,7 +225,6 @@ router.get("/:id", User.getUsersById);
  *                   type: string
  *                   description: Internal Server Error
  */
-
 
 router.put("/:id", User.update);
 /**
