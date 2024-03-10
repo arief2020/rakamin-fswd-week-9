@@ -1,6 +1,5 @@
 const pool = require("../config/query");
 const bcrypt = require("bcrypt");
-const { successResponse, basicResponse } = require("../services/response");
 const jwt = require("jsonwebtoken");
 
 class Auth {

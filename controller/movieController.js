@@ -1,17 +1,19 @@
 const pool = require("../config/query");
+const pagination = require("../services/pagination");
 
 class Movie {
   static async getAll(req, res, next) {
     try {
+
+      const paginationSQL = pagination(req.query)
       const countSQL = `
       SELECT
         COUNT(DISTINCT movies.*)
       FROM
         movies
-      
       `;
       const queryCount = await pool.query(countSQL);
-      const count = queryCount.rows[0];
+      const count = queryCount.rows[0].count;
 
       const dataSQL = `
       SELECT 
@@ -19,13 +21,29 @@ class Movie {
       FROM
         movies
       ORDER BY id ASC
+      ${paginationSQL}
       `;
       const queryData = await pool.query(dataSQL);
       const data = queryData.rows;
 
+      let {limit, page} = req.query;
+
+      // +limit is same like parseInt(limit)
+      limit = +limit || 11
+      page = +page || 1;
+
+      let totalPages = Math.ceil(+count/ limit)
+
+      const nextPage = (page + 1) <= totalPages ? page + 1 : null;
+      const prevPage = (page - 1) > 0 ? page -1 : null
+
       res.status(200).json({
         count,
         data: data,
+        totalPages,
+        currentPage: page,
+        prevPage,
+        nextPage
       });
     } catch (error) {
       next(error);

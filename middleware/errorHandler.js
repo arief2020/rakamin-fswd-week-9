@@ -8,7 +8,7 @@ const errorHandler = (err, req, res, next) => {
     }else if (err.name === "InvalidCredentials") {
         return res.status(400).json({message: "Wrong email or password"})
     } else{
-        res.status(500).json({message: "Internet Server Error"})
+        res.status(500).json({message: "Internal Server Error"})
     }
 }
 
