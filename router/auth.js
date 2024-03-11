@@ -140,7 +140,8 @@ router.post("/register", Auth.register);
  *                 message:
  *                   type: string
  *                   description: Users with this email not found
- */
+*/
+
 router.post("/login", Auth.login);
 
 module.exports = router;

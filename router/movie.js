@@ -12,6 +12,6 @@ router.post("/", authorization, Movie.store);
 
 router.put("/:id", authorization, Movie.update);
 
-router.delete("/:id", Movie.delete);
+router.delete("/:id", authorization, Movie.delete);
 
 module.exports = router;
